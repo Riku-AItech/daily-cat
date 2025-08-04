@@ -15,8 +15,8 @@ jobs:
         
       - name: Get shiba image and update README
         run: |
-          # 柴犬画像APIから画像情報を取得
-          DOG_DATA=$(curl -s "https://api.thedogapi.com/v1/images/search?breed_ids=shiba")
+          # 正しいIDで画像を取得（Shiba InuはID=233）
+          DOG_DATA=$(curl -s "https://api.thedogapi.com/v1/images/search?breed_ids=233")
           DOG_URL=$(echo "$DOG_DATA" | jq -r '.[0].url')
           DOG_WIDTH=$(echo "$DOG_DATA" | jq -r '.[0].width // "不明"')
           DOG_HEIGHT=$(echo "$DOG_DATA" | jq -r '.[0].height // "不明"')
@@ -28,7 +28,8 @@ jobs:
           cat > README.md <<EOF
 # 今日の癒し柴犬 🐶
 
-![今日の柴犬]($DOG_URL)
+![今日の柴犬]("${DOG_URL}")
+
 
 **画像情報:**
 - サイズ: ${DOG_WIDTH} x ${DOG_HEIGHT}
