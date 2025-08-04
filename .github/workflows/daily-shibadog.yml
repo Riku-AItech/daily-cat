@@ -1,11 +1,11 @@
-name: Daily Shiba Update
+name: Daily Cat Update
 on:
   schedule:
     - cron: '0 0 * * *'  # 毎日朝9時（日本時間）
   workflow_dispatch:     # 手動実行も可能
 
 jobs:
-  update-shiba:
+  update-cat:
     runs-on: ubuntu-latest
     permissions:
       contents: write    # ファイル更新のための権限
@@ -13,31 +13,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         
-      - name: Get shiba image and update README
+      - name: Get cat image and update README
         run: |
-          # 柴犬画像APIから画像情報を取得
-          DOG_DATA=$(curl -s "https://api.thedogapi.com/v1/images/search?breed_ids=shiba")
-          DOG_URL=$(echo "$DOG_DATA" | jq -r '.[0].url')
-          DOG_WIDTH=$(echo "$DOG_DATA" | jq -r '.[0].width // "不明"')
-          DOG_HEIGHT=$(echo "$DOG_DATA" | jq -r '.[0].height // "不明"')
+          # 猫画像APIから画像情報を取得
+          CAT_DATA=$(curl -s "https://api.thecatapi.com/v1/images/search")
+          CAT_URL=$(echo $CAT_DATA | jq -r '.[0].url')
+          CAT_WIDTH=$(echo $CAT_DATA | jq -r '.[0].width')
+          CAT_HEIGHT=$(echo $CAT_DATA | jq -r '.[0].height')
           
           # 現在の日時を取得
           CURRENT_DATE=$(date '+%Y-%m-%d %H:%M')
           
           # README.mdを更新
           cat > README.md << EOF
-          # 今日の癒し柴犬 🐕‍🦺
+          # 今日の癒し猫 🐱
           
-          ![今日の柴犬]($DOG_URL)
+          ![今日の猫]($CAT_URL)
           
           **画像情報:**
-          - サイズ: ${DOG_WIDTH} x ${DOG_HEIGHT}
+          - サイズ: ${CAT_WIDTH} x ${CAT_HEIGHT}
           - 最終更新: $CURRENT_DATE
           
           ---
           
-          このリポジトリは毎日朝9時に自動で柴犬画像が更新されます。
-          GitHub Actionsの力で、365日違う柴犬に出会えます！
+          このリポジトリは毎日朝9時に自動で猫画像が更新されます。
+          GitHub Actionsの力で、365日違う猫に出会えます！
           EOF
           
       - name: Commit and push changes
@@ -45,5 +45,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add README.md
-          git commit -m "🐕 今日の柴犬を更新: $(date '+%Y-%m-%d')" || exit 0
+          git commit -m "🐱 今日の猫を更新: $(date '+%Y-%m-%d')" || exit 0
           git push
