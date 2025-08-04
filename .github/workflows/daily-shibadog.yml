@@ -8,7 +8,7 @@ jobs:
   update-dog:
     runs-on: ubuntu-latest
     permissions:
-      contents: write    # ファイル更新のための権限
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,28 +17,28 @@ jobs:
         run: |
           # 柴犬画像APIから画像情報を取得
           DOG_DATA=$(curl -s "https://api.thedogapi.com/v1/images/search?breed_ids=shiba")
-          DOG_URL=$(echo $DOG_DATA | jq -r '.[0].url')
-          DOG_WIDTH=$(echo $DOG_DATA | jq -r '.[0].width')
-          DOG_HEIGHT=$(echo $DOG_DATA | jq -r '.[0].height')
-          
+          DOG_URL=$(echo "$DOG_DATA" | jq -r '.[0].url')
+          DOG_WIDTH=$(echo "$DOG_DATA" | jq -r '.[0].width // "不明"')
+          DOG_HEIGHT=$(echo "$DOG_DATA" | jq -r '.[0].height // "不明"')
+
           # 現在の日時を取得
           CURRENT_DATE=$(date '+%Y-%m-%d %H:%M')
-          
+
           # README.mdを更新
-          cat > README.md << EOF
-          # 今日の癒し柴犬 🐶
-          
-          ![今日の柴犬]($DOG_URL)
-          
-          **画像情報:**
-          - サイズ: ${DOG_WIDTH} x ${DOG_HEIGHT}
-          - 最終更新: $CURRENT_DATE
-          
-          ---
-          
-          このリポジトリは毎日朝9時に自動で柴犬画像が更新されます。
-          GitHub Actionsの力で、365日違う柴犬に出会えます！
-          EOF
+          cat > README.md <<EOF
+# 今日の癒し柴犬 🐶
+
+![今日の柴犬]($DOG_URL)
+
+**画像情報:**
+- サイズ: ${DOG_WIDTH} x ${DOG_HEIGHT}
+- 最終更新: $CURRENT_DATE
+
+---
+
+このリポジトリは毎日朝9時に自動で柴犬画像が更新されます。
+GitHub Actionsの力で、365日違う柴犬に出会えます！
+EOF
           
       - name: Commit and push changes
         run: |
